@@ -33,7 +33,7 @@ export async function getStoreSettings(): Promise<StoreSettings> {
       .select('*')
       .eq('id', 1)
       .single();
-      
+
     if (error || !data) {
       return {
         ...siteConfig,
@@ -43,7 +43,7 @@ export async function getStoreSettings(): Promise<StoreSettings> {
         logoUrlHeader: '/logo22.png'
       };
     }
-    
+
     return {
       name: data.store_name,
       tagline: data.tagline,

@@ -6,10 +6,10 @@ import Image from 'next/image';
 import { supabase } from '../../../lib/supabase';
 import { siteConfig } from '../../../lib/config';
 import { HugeiconsIcon } from '@hugeicons/react';
-import { 
-  Mail01Icon, 
-  LockPasswordIcon, 
-  ViewIcon, 
+import {
+  Mail01Icon,
+  LockPasswordIcon,
+  ViewIcon,
   ViewOffIcon,
   Store01Icon,
   ArrowRight01Icon
@@ -47,7 +47,7 @@ const AdminLoginPage: React.FC = () => {
       });
 
       if (error) throw error;
-      
+
       router.push('/admin');
     } catch (err: any) {
       setError(err.message || 'Failed to login. Please check your credentials.');
@@ -61,11 +61,11 @@ const AdminLoginPage: React.FC = () => {
       <div className={styles.loginBox}>
         <div className={styles.header}>
           <div className={styles.logo}>
-            <Image 
-              src="/images/logo.png" 
-              alt={`${siteConfig.name} Logo`} 
-              width={64} 
-              height={64} 
+            <Image
+              src="/images/logo1.png"
+              alt={`${siteConfig.name} Logo`}
+              width={64}
+              height={64}
               className={styles.loginLogoImage}
             />
           </div>
@@ -80,12 +80,12 @@ const AdminLoginPage: React.FC = () => {
             <label>Email Address</label>
             <div className={styles.inputWrapper}>
               <HugeiconsIcon icon={Mail01Icon} size={20} className={styles.inputIcon} />
-              <input 
-                type="email" 
-                placeholder="admin@example.com" 
+              <input
+                type="email"
+                placeholder="admin@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required 
+                required
               />
             </div>
           </div>
@@ -94,15 +94,15 @@ const AdminLoginPage: React.FC = () => {
             <label>Password</label>
             <div className={styles.inputWrapper}>
               <HugeiconsIcon icon={LockPasswordIcon} size={20} className={styles.inputIcon} />
-              <input 
-                type={showPassword ? 'text' : 'password'} 
-                placeholder="••••••••" 
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required 
+                required
               />
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className={styles.passwordToggle}
                 onClick={() => setShowPassword(!showPassword)}
               >
