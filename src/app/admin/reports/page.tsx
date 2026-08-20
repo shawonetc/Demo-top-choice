@@ -19,6 +19,7 @@ import styles from '../Admin.module.css';
 import { supabase } from '../../../lib/supabase';
 import { StatCardSkeleton } from '../../../components/admin/Skeleton';
 import SalesAnalytics from '../../../components/admin/SalesAnalytics';
+import { siteConfig } from '../../../lib/config';
 
 const ReportsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -311,7 +312,7 @@ const ReportsPage: React.FC = () => {
 
   const handleExportCSV = () => {
     const rows = [
-      ['Report', 'Business Analytics - SquareMart'],
+      ['Report', `Business Analytics - ${siteConfig.name}`],
       ['Date', new Date().toLocaleDateString()],
       [''],
       ['Summary Metrics (Last 30 Days)'],
@@ -333,7 +334,7 @@ const ReportsPage: React.FC = () => {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `SquareMart_Report_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute("download", `${siteConfig.logoTextShort}_Report_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

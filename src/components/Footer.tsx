@@ -1,5 +1,5 @@
 "use client";
-
+ 
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -14,8 +14,10 @@ import {
   Mail01Icon
 } from "@hugeicons/core-free-icons";
 import styles from './Footer.module.css';
+import { useSettings } from '../context/SettingsContext';
 
 export default function Footer() {
+  const settings = useSettings();
   return (
     <footer className={styles.footer}>
       <div className={styles.footerContent}>
@@ -23,46 +25,52 @@ export default function Footer() {
         <div className={styles.column}>
           <div className={styles.logoWrapper}>
             <Image
-              src="/images/logo1.png"
-              alt="NittoNotun-BD Logo"
+              src={settings.logoUrlHeader}
+              alt={`${settings.name} Logo`}
               width={75}
               height={75}
               priority
               className={styles.logoImage}
             />
-            <span className={styles.logoText}>NittoNotun-BD</span>
+            <span className={styles.logoText}>{settings.logoText}</span>
           </div>
           <p className={styles.description}>
             আমরা একটি বিশ্বস্ত আধুনিক ই-কমার্স প্ল্যাটফর্ম। আমাদের লক্ষ্য হলো সর্বোচ্চ গুণগত মান নিশ্চিত করে প্রিমিয়াম পণ্য আপনাদের দোরগোড়ায় সহজে পৌঁছে দেওয়া।
           </p>
           <div className={styles.socialRow}>
-            <a
-              href="https://www.facebook.com/share/1AgQt9VYXB/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.socialBtn}
-              aria-label="Facebook"
-            >
-              <HugeiconsIcon icon={Facebook01Icon} size={18} color="currentColor" />
-            </a>
-            <a
-              href="https://www.tiktok.com/@nittonotunbd?_r=1&_t=ZS-98FNBmuH9ym"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.socialBtn}
-              aria-label="TikTok"
-            >
-              <HugeiconsIcon icon={TiktokIcon} size={18} color="currentColor" />
-            </a>
-            <a
-              href="https://www.instagram.com/nittonotunbd"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.socialBtn}
-              aria-label="Instagram"
-            >
-              <HugeiconsIcon icon={InstagramIcon} size={18} color="currentColor" />
-            </a>
+            {settings.social.facebook && (
+              <a
+                href={settings.social.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialBtn}
+                aria-label="Facebook"
+              >
+                <HugeiconsIcon icon={Facebook01Icon} size={18} color="currentColor" />
+              </a>
+            )}
+            {settings.social.tiktok && (
+              <a
+                href={settings.social.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialBtn}
+                aria-label="TikTok"
+              >
+                <HugeiconsIcon icon={TiktokIcon} size={18} color="currentColor" />
+              </a>
+            )}
+            {settings.social.instagram && (
+              <a
+                href={settings.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialBtn}
+                aria-label="Instagram"
+              >
+                <HugeiconsIcon icon={InstagramIcon} size={18} color="currentColor" />
+              </a>
+            )}
           </div>
         </div>
 
@@ -101,25 +109,25 @@ export default function Footer() {
               <div className={styles.iconContainer}>
                 <HugeiconsIcon icon={Location01Icon} size={18} color="currentColor" />
               </div>
-              <span className={styles.contactText}>শার্শা, যশোর, খুলনা</span>
+              <span className={styles.contactText}>{settings.contact.address}</span>
             </li>
             <li className={styles.contactItem}>
               <div className={styles.iconContainer}>
                 <HugeiconsIcon icon={CallIcon} size={18} color="currentColor" />
               </div>
-              <a href="tel:01887245556" className={styles.contactLink}>+8801887245556</a>
+              <a href={`tel:${settings.contact.phoneDigits}`} className={styles.contactLink}>{settings.contact.phone}</a>
             </li>
             <li className={styles.contactItem}>
               <div className={styles.iconContainer}>
                 <HugeiconsIcon icon={WhatsappIcon} size={18} color="currentColor" />
               </div>
-              <a href="https://wa.me/8801887245556" target="_blank" rel="noopener noreferrer" className={styles.contactLink}>+8801887245556</a>
+              <a href={`https://wa.me/${settings.contact.whatsapp}`} target="_blank" rel="noopener noreferrer" className={styles.contactLink}>{settings.contact.phone}</a>
             </li>
             <li className={styles.contactItem}>
               <div className={styles.iconContainer}>
                 <HugeiconsIcon icon={Mail01Icon} size={18} color="currentColor" />
               </div>
-              <a href="mailto:nittonotonbd@gmail.com" className={styles.contactLink}>nittonotonbd@gmail.com</a>
+              <a href={`mailto:${settings.contact.email}`} className={styles.contactLink}>{settings.contact.email}</a>
             </li>
           </ul>
         </div>
@@ -129,7 +137,7 @@ export default function Footer() {
       {/* Clean Bottom Copyright Bar */}
       <div className={styles.bottomBar}>
         <div className={styles.bottomBarContent}>
-          <p>&copy; {new Date().getFullYear()} NittoNotun-BD. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} {settings.name}. All rights reserved.</p>
         </div>
       </div>
     </footer>

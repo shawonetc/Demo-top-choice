@@ -4,11 +4,12 @@ import React from 'react';
 import { HugeiconsIcon } from "@hugeicons/react";
 import { WhatsappIcon } from "@hugeicons/core-free-icons";
 import styles from './WhatsAppButton.module.css';
+import { siteConfig } from '../lib/config';
 
 export default function WhatsAppButton() {
   return (
     <a
-      href="https://wa.me/8801887245556"
+      href={`https://wa.me/${siteConfig.contact.whatsapp}`}
       target="_blank"
       rel="noopener noreferrer"
       className={styles.whatsappFloat}

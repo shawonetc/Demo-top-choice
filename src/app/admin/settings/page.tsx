@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AdminLayout from '../../../components/admin/AdminLayout';
 import { HugeiconsIcon } from '@hugeicons/react';
 import {
@@ -19,47 +19,192 @@ import {
   ArrowRight01Icon
 } from '@hugeicons/core-free-icons';
 import styles from '../Admin.module.css';
+import { supabase } from '../../../lib/supabase';
 
 const SettingsPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [activeTab, setActiveTab] = useState('general');
 
   const [settings, setSettings] = useState({
-    storeName: 'Nittonotonbd',
-    storeEmail: 'contact@nittonotonbd.com',
-    storePhone: '+880 1942-838348',
-    storeAddress: 'Dhanmondi, Dhaka, Bangladesh',
+    storeName: '',
+    tagline: '',
+    description: '',
+    url: '',
+    logoText: '',
+    logoTextShort: '',
+    primaryColor: '',
+    primaryHover: '',
+    storeEmail: '',
+    storePhone: '',
+    storePhoneDigits: '',
+    storeWhatsapp: '',
+    storeAddress: '',
+    logoUrl: '',
+    logoUrlHeader: '',
+    facebookUrl: '',
+    tiktokUrl: '',
+    instagramUrl: '',
     currency: 'BDT',
     maintenanceMode: false,
     orderNotifications: true,
     stockNotifications: true,
-    newsletter: true,
-    marketingEmails: false
   });
 
-  const handleSave = () => {
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [headerLogoUploading, setHeaderLogoUploading] = useState(false);
+
+  // Fetch settings from Supabase
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        setFetching(true);
+        const { data, error } = await supabase
+          .from('store_settings')
+          .select('*')
+          .eq('id', 1)
+          .single();
+
+        if (error) {
+          console.error('Error fetching settings:', error.message);
+        } else if (data) {
+          setSettings({
+            storeName: data.store_name || '',
+            tagline: data.tagline || '',
+            description: data.description || '',
+            url: data.url || '',
+            logoText: data.logo_text || '',
+            logoTextShort: data.logo_text_short || '',
+            logoUrl: data.logo_url || '/images/logo.png',
+            logoUrlHeader: data.logo_url_header || '/images/logo1.png',
+            primaryColor: data.primary_color || '',
+            primaryHover: data.primary_hover || '',
+            storeEmail: data.email || '',
+            storePhone: data.phone || '',
+            storePhoneDigits: data.phone_digits || '',
+            storeWhatsapp: data.whatsapp || '',
+            storeAddress: data.address || '',
+            facebookUrl: data.facebook_url || '',
+            tiktokUrl: data.tiktok_url || '',
+            instagramUrl: data.instagram_url || '',
+            currency: 'BDT',
+            maintenanceMode: false,
+            orderNotifications: true,
+            stockNotifications: true,
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load settings:', err);
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
+  const handleUploadLogo = async (e: React.ChangeEvent<HTMLInputElement>, isHeader: boolean) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (isHeader) {
+      setHeaderLogoUploading(true);
+    } else {
+      setLogoUploading(true);
+    }
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `logo-${Date.now()}.${fileExt}`;
+      const filePath = `logos/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('products')
+        .getPublicUrl(filePath);
+
+      if (isHeader) {
+        setSettings(prev => ({ ...prev, logoUrlHeader: publicUrl }));
+      } else {
+        setSettings(prev => ({ ...prev, logoUrl: publicUrl }));
+      }
+      alert('Logo uploaded successfully!');
+    } catch (err: any) {
+      alert(`Error uploading logo: ${err.message}`);
+    } finally {
+      if (isHeader) {
+        setHeaderLogoUploading(false);
+      } else {
+        setLogoUploading(false);
+      }
+    }
+  };
+
+  const handleSave = async () => {
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const { error } = await supabase
+        .from('store_settings')
+        .upsert({
+          id: 1,
+          store_name: settings.storeName,
+          tagline: settings.tagline,
+          description: settings.description,
+          url: settings.url,
+          logo_text: settings.logoText,
+          logo_text_short: settings.logoTextShort,
+          logo_url: settings.logoUrl,
+          logo_url_header: settings.logoUrlHeader,
+          primary_color: settings.primaryColor,
+          primary_hover: settings.primaryHover,
+          email: settings.storeEmail,
+          phone: settings.storePhone,
+          phone_digits: settings.storePhoneDigits,
+          whatsapp: settings.storeWhatsapp,
+          address: settings.storeAddress,
+          facebook_url: settings.facebookUrl,
+          tiktok_url: settings.tiktokUrl,
+          instagram_url: settings.instagramUrl,
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) throw error;
+      alert('Settings updated successfully in database!');
+    } catch (err: any) {
+      alert(`Error updating settings: ${err.message}`);
+    } finally {
       setLoading(false);
-      // In a real app, we'd use a toast notification here
-      alert('Settings updated successfully!');
-    }, 1000);
+    }
   };
 
   const tabs = [
-    { id: 'general', name: 'General', icon: Store01Icon },
+    { id: 'general', name: 'General & Profile', icon: Store01Icon },
+    { id: 'branding', name: 'Branding & Socials', icon: Settings02Icon },
     { id: 'security', name: 'Security', icon: Shield01Icon },
     { id: 'notifications', name: 'Notifications', icon: Notification01Icon },
-    { id: 'international', name: 'International', icon: GlobalIcon },
   ];
+
+  if (fetching) {
+    return (
+      <AdminLayout>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+          <div className={styles.loader}></div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
       <div className={styles.sectionHeader}>
         <div>
           <h1 className={styles.pageTitle}>Settings</h1>
-          <p className={styles.pageSubtitle}>Configure your store preferences and system parameters.</p>
+          <p className={styles.pageSubtitle}>Configure your store preferences, branding options, and metadata.</p>
         </div>
         <button className={styles.primaryBtn} onClick={handleSave} disabled={loading}>
           {loading ? (
@@ -100,7 +245,7 @@ const SettingsPage: React.FC = () => {
               <div className={styles.settingsCard}>
                 <div className={styles.settingsCardHeader}>
                   <h3 className={styles.settingsCardTitle}>Store Profile</h3>
-                  <p className={styles.settingsCardSubtitle}>Public information about your business.</p>
+                  <p className={styles.settingsCardSubtitle}>Public contact information for your store.</p>
                 </div>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
@@ -129,7 +274,7 @@ const SettingsPage: React.FC = () => {
                     </div>
                   </div>
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Contact Phone</label>
+                    <label className={styles.formLabel}>Contact Phone (Display)</label>
                     <div className={styles.inputWrapper}>
                       <HugeiconsIcon icon={CallIcon} size={18} className={styles.inputIcon} />
                       <input
@@ -141,7 +286,19 @@ const SettingsPage: React.FC = () => {
                     </div>
                   </div>
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Store Location</label>
+                    <label className={styles.formLabel}>Contact Phone Digits (Links)</label>
+                    <div className={styles.inputWrapper}>
+                      <HugeiconsIcon icon={CallIcon} size={18} className={styles.inputIcon} />
+                      <input
+                        type="text"
+                        className={`${styles.input} ${styles.inputWithIcon}`}
+                        value={settings.storePhoneDigits}
+                        onChange={(e) => setSettings({ ...settings, storePhoneDigits: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
+                    <label className={styles.formLabel}>Store Location Address</label>
                     <div className={styles.inputWrapper}>
                       <HugeiconsIcon icon={Location01Icon} size={18} className={styles.inputIcon} />
                       <input
@@ -154,44 +311,165 @@ const SettingsPage: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </>
+          )}
 
+          {activeTab === 'branding' && (
+            <>
               <div className={styles.settingsCard}>
                 <div className={styles.settingsCardHeader}>
-                  <h3 className={styles.settingsCardTitle}>Global Settings</h3>
-                  <p className={styles.settingsCardSubtitle}>Control site-wide behavior and appearance.</p>
+                  <h3 className={styles.settingsCardTitle}>SEO & Branding Metadata</h3>
+                  <p className={styles.settingsCardSubtitle}>Configure metadata tags, taglines, and color values.</p>
                 </div>
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Default Currency</label>
-                    <div className={styles.inputWrapper}>
-                      <HugeiconsIcon icon={CreditCardIcon} size={18} className={styles.inputIcon} />
-                      <select
-                        className={`${styles.select} ${styles.inputWithIcon}`}
-                        style={{ width: '100%' }}
-                        value={settings.currency}
-                        onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
-                      >
-                        <option value="BDT">Bangladeshi Taka (৳)</option>
-                        <option value="USD">US Dollar ($)</option>
-                        <option value="EUR">Euro (€)</option>
-                      </select>
+                    <label className={styles.formLabel}>Tagline</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={settings.tagline}
+                      onChange={(e) => setSettings({ ...settings, tagline: e.target.value })}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Domain URL</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={settings.url}
+                      onChange={(e) => setSettings({ ...settings, url: e.target.value })}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Logo Text (Full)</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={settings.logoText}
+                      onChange={(e) => setSettings({ ...settings, logoText: e.target.value })}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Logo Text (Short)</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={settings.logoTextShort}
+                      onChange={(e) => setSettings({ ...settings, logoTextShort: e.target.value })}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Primary Theme Color</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      placeholder="#ff5a00"
+                      value={settings.primaryColor}
+                      onChange={(e) => setSettings({ ...settings, primaryColor: e.target.value })}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Primary Color Hover</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      placeholder="#e04f00"
+                      value={settings.primaryHover}
+                      onChange={(e) => setSettings({ ...settings, primaryHover: e.target.value })}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Primary Logo (Sidebar/Login)</label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleUploadLogo(e, false)}
+                        style={{ display: 'none' }}
+                        id="logo-upload"
+                      />
+                      <label htmlFor="logo-upload" className={styles.secondaryBtn} style={{ cursor: 'pointer', margin: 0, padding: '8px 16px', fontSize: '14px' }}>
+                        {logoUploading ? 'Uploading...' : 'Choose File'}
+                      </label>
+                      {settings.logoUrl && (
+                        <img src={settings.logoUrl} alt="Logo Preview" style={{ height: '36px', maxWidth: '100px', objectFit: 'contain', borderRadius: '4px', border: '1px solid #ddd', padding: '2px' }} />
+                      )}
                     </div>
                   </div>
-                  
-                  <div className={styles.settingItem}>
-                    <div className={styles.settingItemInfo}>
-                      <span className={styles.settingItemLabel}>Maintenance Mode</span>
-                      <span className={styles.settingItemDesc}>Take your store offline for updates.</span>
-                    </div>
-                    <label className={styles.switch}>
-                      <input 
-                        type="checkbox" 
-                        checked={settings.maintenanceMode}
-                        onChange={(e) => setSettings({ ...settings, maintenanceMode: e.target.checked })}
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Header/Footer Logo</label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleUploadLogo(e, true)}
+                        style={{ display: 'none' }}
+                        id="header-logo-upload"
                       />
-                      <span className={styles.slider}></span>
-                    </label>
+                      <label htmlFor="header-logo-upload" className={styles.secondaryBtn} style={{ cursor: 'pointer', margin: 0, padding: '8px 16px', fontSize: '14px' }}>
+                        {headerLogoUploading ? 'Uploading...' : 'Choose File'}
+                      </label>
+                      {settings.logoUrlHeader && (
+                        <img src={settings.logoUrlHeader} alt="Header Logo Preview" style={{ height: '36px', maxWidth: '100px', objectFit: 'contain', borderRadius: '4px', border: '1px solid #ddd', padding: '2px' }} />
+                      )}
+                    </div>
+                  </div>
+                  <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
+                    <label className={styles.formLabel}>Meta Description</label>
+                    <textarea
+                      className={styles.input}
+                      style={{ minHeight: '80px', padding: '12px', resize: 'vertical' }}
+                      value={settings.description}
+                      onChange={(e) => setSettings({ ...settings, description: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.settingsCard}>
+                <div className={styles.settingsCardHeader}>
+                  <h3 className={styles.settingsCardTitle}>Social Links & Channels</h3>
+                  <p className={styles.settingsCardSubtitle}>Manage channels and float numbers.</p>
+                </div>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>WhatsApp Number (Digits only)</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      placeholder="8801887245556"
+                      value={settings.storeWhatsapp}
+                      onChange={(e) => setSettings({ ...settings, storeWhatsapp: e.target.value })}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Facebook URL</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={settings.facebookUrl}
+                      onChange={(e) => setSettings({ ...settings, facebookUrl: e.target.value })}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>TikTok URL</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={settings.tiktokUrl}
+                      onChange={(e) => setSettings({ ...settings, tiktokUrl: e.target.value })}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.formLabel}>Instagram URL</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={settings.instagramUrl}
+                      onChange={(e) => setSettings({ ...settings, instagramUrl: e.target.value })}
+                    />
                   </div>
                 </div>
               </div>
@@ -231,18 +509,6 @@ const SettingsPage: React.FC = () => {
                   Update Password
                 </button>
               </div>
-
-              <div style={{ marginTop: '40px', padding: '20px', backgroundColor: '#fff8f6', borderRadius: '12px', border: '1px solid #ffe4dc' }}>
-                <div style={{ display: 'flex', gap: '12px' }}>
-                  <HugeiconsIcon icon={Shield01Icon} size={20} color="#ff5a00" />
-                  <div>
-                    <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#852d00' }}>Two-Factor Authentication</h4>
-                    <p style={{ fontSize: '13px', color: '#a34e24', marginTop: '4px' }}>
-                      Add an extra layer of security to your account by enabling 2FA. (Coming Soon)
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
           )}
 
@@ -256,9 +522,7 @@ const SettingsPage: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 {[
                   { id: 'orderNotifications', label: 'Order Notifications', desc: 'Receive instant alerts when a new order is placed.' },
-                  { id: 'stockNotifications', label: 'Low Stock Alerts', desc: 'Be notified when product quantity drops below threshold.' },
-                  { id: 'newsletter', label: 'Platform Updates', desc: 'Stay informed about new features and improvements.' },
-                  { id: 'marketingEmails', label: 'Marketing Insights', desc: 'Receive periodic analytics and performance reports.' }
+                  { id: 'stockNotifications', label: 'Low Stock Alerts', desc: 'Be notified when product quantity drops below threshold.' }
                 ].map((item) => (
                   <div key={item.id} className={styles.settingItem}>
                     <div className={styles.settingItemInfo}>
@@ -276,30 +540,6 @@ const SettingsPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </div>
-          )}
-
-          {activeTab === 'international' && (
-            <div className={styles.settingsCard} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '60px 20px' }}>
-              <div style={{ 
-                width: '80px', 
-                height: '80px', 
-                backgroundColor: 'rgba(255, 90, 0, 0.05)', 
-                borderRadius: '50%', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                marginBottom: '24px'
-              }}>
-                <HugeiconsIcon icon={GlobalIcon} size={40} color="var(--primary-color)" />
-              </div>
-              <h3 className={styles.settingsCardTitle}>International Settings</h3>
-              <p className={styles.settingsCardSubtitle} style={{ maxWidth: '400px', margin: '8px auto 0' }}>
-                Manage multiple languages, localized tax rates, and regional shipping zones. This feature is currently in development.
-              </p>
-              <button className={styles.secondaryBtn} style={{ marginTop: '32px' }} disabled>
-                Request Access
-              </button>
             </div>
           )}
         </div>

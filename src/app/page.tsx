@@ -28,6 +28,7 @@ export default async function Home() {
   }));
 
   const waterproofProducts = products.filter(p => p.category === 'ওয়াটারপ্রুফ চাদর');
+  const newCollectionProducts = products.filter(p => p.category === 'নতুন কালেকশন');
 
   return (
     <>
@@ -38,6 +39,13 @@ export default async function Home() {
           Nittonotonbd - Best Online Shopping in Bangladesh for Electronics &amp; Lifestyle
         </h1>
         <HeroBanner />
+        <ProductGrid 
+          title="নতুন কালেকশন" 
+          products={newCollectionProducts} 
+          showSeeMore={true} 
+          seeMoreUrl="/category/new-collection"
+          disablePagination={true}
+        />
         <ProductGrid 
           title="Waterproof Bedsheet" 
           products={waterproofProducts} 

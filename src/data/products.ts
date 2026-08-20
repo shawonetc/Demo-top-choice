@@ -100,6 +100,66 @@ export const mockProducts: Product[] = [
     stockStatus: 'In Stock',
     callToOrder: '01942-838348'
   },
+  {
+    id: 201,
+    slug: 'new-product-1',
+    title: 'প্রোডাক্ট কালেকশন ১',
+    price: 850,
+    imageUrl: '/product/WhatsApp Image 2026-08-15 at 6.14.30 PM.jpeg',
+    category: 'নতুন কালেকশন',
+    stockStatus: 'In Stock',
+    callToOrder: '01942-838348'
+  },
+  {
+    id: 202,
+    slug: 'new-product-2',
+    title: 'প্রোডাক্ট কালেকশন ২',
+    price: 950,
+    imageUrl: '/product/WhatsApp Image 2026-08-15 at 6.14.30 PM (1).jpeg',
+    category: 'নতুন কালেকশন',
+    stockStatus: 'In Stock',
+    callToOrder: '01942-838348'
+  },
+  {
+    id: 203,
+    slug: 'new-product-3',
+    title: 'প্রোডাক্ট কালেকশন ৩',
+    price: 750,
+    imageUrl: '/product/WhatsApp Image 2026-08-15 at 6.14.31 PM.jpeg',
+    category: 'নতুন কালেকশন',
+    stockStatus: 'In Stock',
+    callToOrder: '01942-838348'
+  },
+  {
+    id: 204,
+    slug: 'new-product-4',
+    title: 'প্রোডাক্ট কালেকশন ৪',
+    price: 650,
+    imageUrl: '/product/WhatsApp Image 2026-08-15 at 6.14.31 PM (1).jpeg',
+    category: 'নতুন কালেকশন',
+    stockStatus: 'In Stock',
+    callToOrder: '01942-838348'
+  },
+  {
+    id: 205,
+    slug: 'new-product-5',
+    title: 'প্রোডাক্ট কালেকশন ৫',
+    price: 1200,
+    imageUrl: '/product/WhatsApp Image 2026-08-15 at 6.14.32 PM.jpeg',
+    category: 'নতুন কালেকশন',
+    stockStatus: 'In Stock',
+    callToOrder: '01942-838348'
+  },
+  {
+    id: 206,
+    slug: 'new-product-6',
+    title: 'প্রোডাক্ট কালেকশন ৬',
+    price: 1100,
+    imageUrl: '/product/WhatsApp Image 2026-08-15 at 6.14.32 PM (1).jpeg',
+    category: 'নতুন কালেকশন',
+    stockStatus: 'In Stock',
+    callToOrder: '01942-838348'
+  },
 ];
 
 const generateSlug = (text: string) => {
@@ -145,7 +205,7 @@ export async function getProducts(): Promise<Product[]> {
     return mockProducts; // Fallback
   }
 
-  return data.map(p => {
+  const dbProducts = data.map(p => {
     let slug = p.slug;
     if (!slug || slug === 'waterproof-bedsheet' || slug === 'reusable-diaper') {
       const code = extractProductCode(p.description, p.title);
@@ -167,6 +227,12 @@ export async function getProducts(): Promise<Product[]> {
       productCode: extractProductCode(p.description, p.title)
     };
   });
+
+  const mockOnlyProducts = mockProducts.filter(mp => 
+    !dbProducts.some(dbp => dbp.id === mp.id || dbp.slug === mp.slug)
+  );
+
+  return [...dbProducts, ...mockOnlyProducts];
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | undefined> {
@@ -197,18 +263,18 @@ export async function getProductBySlug(slug: string): Promise<Product | undefine
     };
   }
 
-  // Second attempt: check if slug has embedded ID (e.g. product-55 or waterproof-bedsheet-22) or is numeric
+  // Second attempt: fetch all products and find matching slug
+  const products = await getProducts();
+  const found = products.find(p => p.slug === decodedSlug || p.slug.toLowerCase() === decodedSlug.toLowerCase());
+  if (found) return found;
+
+  // Third attempt: check if slug has embedded ID (e.g. product-55 or waterproof-bedsheet-22) or is numeric
   const matchId = decodedSlug.match(/-(\d+)$/) || decodedSlug.match(/^(\d+)$/);
   if (matchId) {
     const id = parseInt(matchId[1], 10);
     const product = await getProductById(id);
     if (product) return product;
   }
-
-  // Third attempt: fetch all products and find matching slug
-  const products = await getProducts();
-  const found = products.find(p => p.slug === decodedSlug || p.slug.toLowerCase() === decodedSlug.toLowerCase());
-  if (found) return found;
 
   console.error('Product not found for slug:', decodedSlug);
   return mockProducts.find(p => p.slug === decodedSlug);

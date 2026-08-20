@@ -11,6 +11,7 @@ interface Props {
 }
 
 const categoryMap: Record<string, string> = {
+  "new-collection": "নতুন কালেকশন",
   "waterproof-chador": "ওয়াটারপ্রুফ চাদর",
   "normal-chador": "ডায়াপার",
   "diaper": "ডায়াপার",

@@ -25,6 +25,7 @@ import StatCard from '../../../components/admin/StatCard';
 import { Dollar01Icon, ShoppingBagIcon } from '@hugeicons/core-free-icons';
 import { supabase } from '../../../lib/supabase';
 import { StatCardSkeleton, TableRowSkeleton } from '../../../components/admin/Skeleton';
+import { siteConfig } from '../../../lib/config';
 
 interface OrderItem {
   id: number;
@@ -408,8 +409,8 @@ const AdminOrdersPageContent: React.FC = () => {
           <title>Invoice - ${order.id}</title>
           <style>
             body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; color: #333; }
-            .header { display: flex; justify-content: space-between; border-bottom: 2px solid #ff5a00; padding-bottom: 20px; }
-            .logo { font-size: 24px; font-weight: 800; color: #ff5a00; }
+            .header { display: flex; justify-content: space-between; border-bottom: 2px solid ${siteConfig.primaryColor}; padding-bottom: 20px; }
+            .logo { font-size: 24px; font-weight: 800; color: ${siteConfig.primaryColor}; }
             .invoice-info { text-align: right; }
             .details { display: flex; justify-content: space-between; margin-top: 40px; }
             .table { width: 100%; border-collapse: collapse; margin-top: 40px; }
@@ -417,13 +418,13 @@ const AdminOrdersPageContent: React.FC = () => {
             .table td { padding: 12px; border-bottom: 1px solid #eee; }
             .totals { margin-top: 40px; text-align: right; }
             .totals div { margin-bottom: 10px; font-size: 14px; }
-            .grand-total { font-size: 20px; font-weight: 800; color: #ff5a00; border-top: 1px solid #eee; padding-top: 10px; }
+            .grand-total { font-size: 20px; font-weight: 800; color: ${siteConfig.primaryColor}; border-top: 1px solid #eee; padding-top: 10px; }
             @media print { .no-print { display: none; } }
           </style>
         </head>
         <body>
           <div class="header">
-            <div class="logo">Nittonotonbd</div>
+            <div class="logo">${siteConfig.name}</div>
             <div class="invoice-info">
               <h2 style="margin: 0;">INVOICE</h2>
               <p>Order ID: ${order.id}</p>

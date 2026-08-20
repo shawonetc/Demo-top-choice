@@ -104,7 +104,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         className={`${styles.sidebarOverlay} ${isSidebarOpen ? styles.showOverlay : ''}`}
         onClick={closeSidebar}
       />
-      <AdminSidebar isOpen={isSidebarOpen} />
+      <AdminSidebar isOpen={isSidebarOpen} setIsOpen={setSidebarOpen} />
       <main className={styles.mainContent}>
         <AdminNavbar onMenuClick={toggleSidebar} />
         <div className={styles.contentWrapper}>

@@ -250,7 +250,7 @@ const AddProductPage: React.FC = () => {
       router.push('/admin/products');
     } catch (error) {
       console.error('Error saving product:', error);
-      alert('Failed to save product.');
+      alert(`Failed to save product: ${error instanceof Error ? error.message : JSON.stringify(error)}`);
     } finally {
       setLoading(false);
     }

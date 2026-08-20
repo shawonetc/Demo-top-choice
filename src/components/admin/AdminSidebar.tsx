@@ -23,6 +23,7 @@ import styles from '../../app/admin/Admin.module.css';
 import { supabase } from '../../lib/supabase';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useSettings } from '../../context/SettingsContext';
 
 const navGroups = [
   {
@@ -35,15 +36,14 @@ const navGroups = [
   {
     title: 'Management',
     items: [
-      { name: 'Products', icon: PackageIcon, href: '/admin/products' },
       { name: 'Orders', icon: ShoppingBasket01Icon, href: '/admin/orders' },
+      { name: 'Products', icon: PackageIcon, href: '/admin/products' },
       { name: 'Users', icon: UserGroupIcon, href: '/admin/users' },
     ]
   },
   {
     title: 'System',
     items: [
-      { name: 'Notifications', icon: Notification01Icon, href: '/admin/notifications' },
       { name: 'Settings', icon: Settings02Icon, href: '/admin/settings' },
     ]
   }
@@ -51,11 +51,13 @@ const navGroups = [
 
 interface AdminSidebarProps {
   isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 }
 
-const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen }) => {
+export default function AdminSidebar({ isOpen, setIsOpen }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const settings = useSettings();
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
@@ -77,15 +79,15 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen }) => {
         <div className={styles.logoContainer}>
           <div className={styles.logoIcon}>
             <Image 
-              src="/images/logo.png" 
-              alt="Nittonotonbd Logo" 
+              src={settings.logoUrl} 
+              alt={`${settings.name} Logo`} 
               width={32} 
               height={32} 
               className={styles.adminLogoImage}
             />
           </div>
           <div className={styles.logoInfo}>
-            <span className={styles.logoText}>Nittonotonbd</span>
+            <span className={styles.logoText}>{settings.logoTextShort}</span>
             <span className={styles.logoTagline}>Admin Panel</span>
           </div>
         </div>
@@ -147,6 +149,4 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen }) => {
       </div>
     </aside>
   );
-};
-
-export default AdminSidebar;
+}

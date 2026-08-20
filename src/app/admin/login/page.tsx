@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { supabase } from '../../../lib/supabase';
+import { siteConfig } from '../../../lib/config';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { 
   Mail01Icon, 
@@ -62,7 +63,7 @@ const AdminLoginPage: React.FC = () => {
           <div className={styles.logo}>
             <Image 
               src="/images/logo.png" 
-              alt="Nittonotonbd Logo" 
+              alt={`${siteConfig.name} Logo`} 
               width={64} 
               height={64} 
               className={styles.loginLogoImage}
@@ -121,7 +122,7 @@ const AdminLoginPage: React.FC = () => {
         </form>
 
         <div className={styles.footer}>
-          <p>&copy; 2026 Nittonotonbd. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</p>
         </div>
       </div>
       <div className={styles.backgroundCircles}>

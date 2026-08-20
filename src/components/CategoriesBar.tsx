@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './CategoriesBar.module.css';
 
 const categories = [
+  { name: "নতুন কালেকশন", slug: "new-collection" },
   { name: "ওয়াটারপ্রুফ চাদর", slug: "waterproof-chador" },
   { name: "ডায়াপার", slug: "normal-chador" },
   { name: "মশারী", slug: "moshari" }

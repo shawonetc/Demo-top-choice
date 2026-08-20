@@ -8,15 +8,18 @@ import styles from './Header.module.css';
 import { useCart } from '../context/CartContext';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useSettings } from '../context/SettingsContext';
 
 export default function Header() {
   const { cartItems } = useCart();
+  const settings = useSettings();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState('');
   const router = useRouter();
 
   const categories = [
+    { name: "নতুন কালেকশন", slug: "new-collection" },
     { name: "ওয়াটারপ্রুফ চাদর", slug: "waterproof-chador" },
     { name: "ডায়াপার", slug: "normal-chador" },
     { name: "মশারী", slug: "moshari" }
@@ -60,14 +63,14 @@ export default function Header() {
         <div className={styles.logo}>
           <Link href="/" className={styles.logoLink}>
             <Image
-              src="/images/logo1.png"
-              alt="Nittonotonbd Logo"
+              src={settings.logoUrlHeader}
+              alt={`${settings.name} Logo`}
               width={32}
               height={32}
               priority
               className={styles.logoIcon}
             />
-            <span className={styles.logoText}>NittoNotun-BD</span>
+            <span className={styles.logoText}>{settings.logoText}</span>
           </Link>
         </div>
 

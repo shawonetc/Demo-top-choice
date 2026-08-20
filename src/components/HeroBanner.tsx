@@ -4,8 +4,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import styles from './HeroBanner.module.css';
 
 const slides = [
-  { src: '/cover5.png', alt: 'Special Offer Banner 1' },
-  { src: '/cover8.png', alt: 'Special Offer Banner 2' },
+  { src: '/cover10.png', alt: 'Special Offer Banner' },
 ];
 
 const DRAG_THRESHOLD = 50; // px
