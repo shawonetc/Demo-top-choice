@@ -184,7 +184,7 @@ const SettingsPage: React.FC = () => {
 
   const tabs = [
     { id: 'general', name: 'General & Profile', icon: Store01Icon },
-    { id: 'branding', name: 'Branding & Socials', icon: Settings02Icon },
+    // { id: 'branding', name: 'Branding & Socials', icon: Settings02Icon },
     { id: 'security', name: 'Security', icon: Shield01Icon },
     { id: 'notifications', name: 'Notifications', icon: Notification01Icon },
   ];
@@ -314,7 +314,7 @@ const SettingsPage: React.FC = () => {
             </>
           )}
 
-          {activeTab === 'branding' && (
+          {/* {activeTab === 'branding' && (
             <>
               <div className={styles.settingsCard}>
                 <div className={styles.settingsCardHeader}>
@@ -474,7 +474,7 @@ const SettingsPage: React.FC = () => {
                 </div>
               </div>
             </>
-          )}
+          )} */}
 
           {activeTab === 'security' && (
             <div className={styles.settingsCard}>
