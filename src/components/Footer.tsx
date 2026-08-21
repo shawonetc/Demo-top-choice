@@ -25,7 +25,7 @@ export default function Footer() {
         <div className={styles.column}>
           <div className={styles.logoWrapper}>
             <Image
-              src={settings.logoUrlHeader}
+              src="/logo.jpeg"
               alt={`${settings.name} Logo`}
               width={75}
               height={75}
@@ -109,19 +109,19 @@ export default function Footer() {
               <div className={styles.iconContainer}>
                 <HugeiconsIcon icon={Location01Icon} size={18} color="currentColor" />
               </div>
-              <span className={styles.contactText}>{settings.contact.address}</span>
+              <span className={styles.contactText}>শাহরাস্তি, চাঁদপুর</span>
             </li>
             <li className={styles.contactItem}>
               <div className={styles.iconContainer}>
                 <HugeiconsIcon icon={CallIcon} size={18} color="currentColor" />
               </div>
-              <a href={`tel:${settings.contact.phoneDigits}`} className={styles.contactLink}>{settings.contact.phone}</a>
+              <a href="tel:013016975090" className={styles.contactLink}>013016975090</a>
             </li>
             <li className={styles.contactItem}>
               <div className={styles.iconContainer}>
                 <HugeiconsIcon icon={WhatsappIcon} size={18} color="currentColor" />
               </div>
-              <a href={`https://wa.me/${settings.contact.whatsapp}`} target="_blank" rel="noopener noreferrer" className={styles.contactLink}>{settings.contact.phone}</a>
+              <a href="https://wa.me/88013016975090" target="_blank" rel="noopener noreferrer" className={styles.contactLink}>013016975090</a>
             </li>
             <li className={styles.contactItem}>
               <div className={styles.iconContainer}>
@@ -137,7 +137,17 @@ export default function Footer() {
       {/* Clean Bottom Copyright Bar */}
       <div className={styles.bottomBar}>
         <div className={styles.bottomBarContent}>
-          <p>&copy; {new Date().getFullYear()} {settings.name}. All rights reserved.</p>
+          <p>
+            &copy; 2026 NittoNotun-BDs. All rights reserved. | Developer{' '}
+            <a 
+              href="http://demo-shawon.vercel.app/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              style={{ color: 'inherit', textDecoration: 'underline' }}
+            >
+              Shawon
+            </a>
+          </p>
         </div>
       </div>
     </footer>

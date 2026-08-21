@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "NittoNotun-BD",
-  tagline: "Best Online Shopping in Bangladesh",
-  description: "NittoNotun-BD is Bangladesh's trusted online marketplace for high-quality electronics, home appliances, and lifestyle products. Shop now for genuine products and fast delivery.",
+  tagline: "Premium & Stylish T-Shirts in Bangladesh",
+  description: "Shop the best premium, comfortable, and stylish T-shirts online at NittoNotun-BD. Get high-quality, trendy designs at affordable prices with fast home delivery in Bangladesh.",
   url: "https://nittonotonbd.com",
   logoText: "NittoNotun-BD",
   logoTextShort: "Nittonotonbd",

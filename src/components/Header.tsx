@@ -63,7 +63,7 @@ export default function Header() {
         <div className={styles.logo}>
           <Link href="/" className={styles.logoLink}>
             <Image
-              src={settings.logoUrlHeader}
+              src="/logo.jpeg"
               alt={`${settings.name} Logo`}
               width={32}
               height={32}

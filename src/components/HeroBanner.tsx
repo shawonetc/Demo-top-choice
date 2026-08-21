@@ -5,6 +5,7 @@ import styles from './HeroBanner.module.css';
 
 const slides = [
   { src: '/cover10.png', alt: 'Special Offer Banner' },
+  { src: '/cover3.jpeg', alt: 'Second Cover Banner' },
 ];
 
 const DRAG_THRESHOLD = 50; // px

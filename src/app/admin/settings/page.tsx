@@ -24,7 +24,7 @@ import { supabase } from '../../../lib/supabase';
 const SettingsPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-  const [activeTab, setActiveTab] = useState('general');
+  const [activeTab, setActiveTab] = useState('security');
 
   const [settings, setSettings] = useState({
     storeName: '',
@@ -183,7 +183,7 @@ const SettingsPage: React.FC = () => {
   };
 
   const tabs = [
-    { id: 'general', name: 'General & Profile', icon: Store01Icon },
+    // { id: 'general', name: 'General & Profile', icon: Store01Icon },
     // { id: 'branding', name: 'Branding & Socials', icon: Settings02Icon },
     { id: 'security', name: 'Security', icon: Shield01Icon },
     { id: 'notifications', name: 'Notifications', icon: Notification01Icon },

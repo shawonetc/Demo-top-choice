@@ -48,6 +48,8 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasInitiatedCheckout, setHasInitiatedCheckout] = useState(false);
   const [selectedFallbackSize, setSelectedFallbackSize] = useState('default-6x7');
+  const [successModal, setSuccessModal] = useState<{ isOpen: boolean; orderId?: string } | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const targetItem = cartItems.find(item =>
     item.title.toLowerCase().includes('waterproof') ||
@@ -109,7 +111,7 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (cartItems.length === 0) {
-      alert("আপনার কার্ট খালি!");
+      setErrorMessage("আপনার কার্ট খালি!");
       return;
     }
 
@@ -178,13 +180,10 @@ export default function CheckoutPage() {
         order_id: String(order.id)
       });
 
-      alert("অর্ডার সফলভাবে সম্পন্ন হয়েছে!");
-
-      clearCart();
-      router.push('/');
+      setSuccessModal({ isOpen: true, orderId: order.id });
     } catch (error) {
       console.error('Error placing order:', error);
-      alert("অর্ডার করার সময় সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।");
+      setErrorMessage("অর্ডার করার সময় সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।");
     } finally {
       setIsSubmitting(false);
     }
@@ -222,52 +221,7 @@ export default function CheckoutPage() {
 
               </div>
 
-              <div className={styles.formGroup} style={{ marginTop: '15px', marginBottom: '20px' }}>
-                <label className={styles.cartSizeSelectLabel}>সাইজ নির্ধারণ করুন:</label>
-                <div className={styles.cartSizeOptionsGrid}>
-                  {formSizeOptions.map((opt) => {
-                    const isActive = targetItem
-                      ? isOptionActive(targetItem.id, opt.id, targetItem.price, opt.price)
-                      : (selectedFallbackSize === opt.id);
 
-                    return (
-                      <div
-                        key={opt.id}
-                        className={`${styles.cartSizeOptionCard} ${isActive ? styles.cartActiveSizeCard : ''}`}
-                        onClick={() => {
-                          if (targetItem) {
-                            if (!isActive) {
-                              changeCartItemProduct(targetItem.id, {
-                                id: opt.id,
-                                title: opt.title,
-                                price: opt.price,
-                                imageUrl: opt.imageUrl
-                              });
-                            }
-                          } else {
-                            setSelectedFallbackSize(opt.id);
-                          }
-                        }}
-                      >
-                        <span className={styles.cartSizeRadioCircle}>
-                          {isActive && <span className={styles.cartSizeRadioInnerCircle}></span>}
-                        </span>
-                        <span className={styles.cartSizeName}>{opt.sizeName}</span>
-                        <span className={styles.cartSizePrice}>{opt.price} টাকা</span>
-                      </div>
-                    );
-                  })}
-                </div>
-                <input
-                  type="hidden"
-                  name="notes"
-                  value={
-                    targetItem
-                      ? (targetItem.id.toString().includes('7x8') ? 'সাইজ, ৭ফুট x ৮ ফুট (১৩৫০ টাকা)' : 'সাইজ, ৬ফুট x ৭ ফুট (১১৫০ টাকা)')
-                      : (selectedFallbackSize.includes('7x8') ? 'সাইজ, ৭ফুট x ৮ ফুট (১৩৫০ টাকা)' : 'সাইজ, ৬ফুট x ৭ ফুট (১১৫০ টাকা)')
-                  }
-                />
-              </div>
 
               <div className={styles.formGroup}>
                 <label>ডেলিভারি চার্জ</label>
@@ -345,6 +299,52 @@ export default function CheckoutPage() {
         </div>
       </main>
       <Footer />
+
+      {successModal?.isOpen && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalIcon}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <h2 className={styles.modalTitle}>ধন্যবাদ!</h2>
+            <p className={styles.modalMessage}>
+              আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে। <br />
+              {successModal.orderId && (
+                <span style={{ marginTop: '8px', display: 'block' }}>অর্ডার আইডি: <span className={styles.modalOrderId}>#ORD-{successModal.orderId}</span></span>
+              )}
+            </p>
+            <button
+              onClick={() => {
+                clearCart();
+                router.push('/');
+              }}
+              className={styles.modalButton}
+            >
+              কেনাকাটা চালিয়ে যান
+            </button>
+          </div>
+        </div>
+      )}
+
+      {errorMessage && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <div className={styles.modalIconError}>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </div>
+            <h2 className={styles.modalTitle}>দুঃখিত!</h2>
+            <p className={styles.modalMessage}>{errorMessage}</p>
+            <button onClick={() => setErrorMessage(null)} className={styles.modalButtonError}>
+              আবার চেষ্টা করুন
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

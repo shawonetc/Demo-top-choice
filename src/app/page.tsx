@@ -36,7 +36,7 @@ export default async function Home() {
       <CategoriesBar />
       <main>
         <h1 style={{ position: 'absolute', width: '1px', height: '1px', padding: '0', margin: '-1px', overflow: 'hidden', clip: 'rect(0, 0, 0, 0)', border: '0' }}>
-          Nittonotonbd - Best Online Shopping in Bangladesh for Electronics &amp; Lifestyle
+          NittoNotun-BD - Best Online Shop for Premium &amp; Stylish T-Shirts in Bangladesh
         </h1>
         <HeroBanner />
         <ProductGrid 

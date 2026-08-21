@@ -62,7 +62,7 @@ const AdminLoginPage: React.FC = () => {
         <div className={styles.header}>
           <div className={styles.logo}>
             <Image
-              src="/images/logo1.png"
+              src="/logo.jpeg"
               alt={`${siteConfig.name} Logo`}
               width={64}
               height={64}

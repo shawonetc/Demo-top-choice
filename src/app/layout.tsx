@@ -17,11 +17,11 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`
   },
   description: siteConfig.description,
-  keywords: [siteConfig.name, "Online Shopping BD", "E-commerce Bangladesh", "Buy Electronics Online", "Home Appliances Bangladesh"],
+  keywords: [siteConfig.name, "Premium T-Shirts BD", "Stylish Men T-Shirts", "Buy T-Shirts Bangladesh", "Trendy T-Shirts Online", "Premium T-Shirts", "Cotton T-Shirts BD"],
   authors: [{ name: `${siteConfig.name} Team` }],
   icons: {
-    icon: "/images/logo.png",
-    apple: "/images/logo.png",
+    icon: "/logo.jpeg",
+    apple: "/logo.jpeg",
   },
   openGraph: {
     type: "website",

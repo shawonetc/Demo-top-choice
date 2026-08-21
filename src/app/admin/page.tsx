@@ -56,6 +56,8 @@ const AdminDashboardContent: React.FC = () => {
     customers: 0
   });
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [salesData, setSalesData] = useState<{ category: string; percentage: number; color: string }[]>([]);
+  const [activityData, setActivityData] = useState<{ day: string; value: number }[]>([]);
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -68,12 +70,19 @@ const AdminDashboardContent: React.FC = () => {
 
       if (ordersError) throw ordersError;
 
-      // 2. Fetch Products Count
-      const { count: productCount, error: productError } = await supabase
+      // 2. Fetch Products Count and Details
+      const { data: productsData, error: productError } = await supabase
         .from('products')
-        .select('*', { count: 'exact', head: true });
+        .select('id, category');
 
       if (productError) throw productError;
+      const productCount = productsData?.length || 0;
+
+      // Create product category map
+      const productCategoryMap: Record<string, string> = {};
+      productsData?.forEach(p => {
+        productCategoryMap[String(p.id)] = p.category || 'Uncategorized';
+      });
 
       // Calculate stats
       const revenue = orders.reduce((acc, o) => acc + (o.status !== 'Cancelled' ? o.total : 0), 0);
@@ -88,9 +97,81 @@ const AdminDashboardContent: React.FC = () => {
       setStats({
         revenue,
         orders: orders.length,
-        products: productCount || 0,
+        products: productCount,
         customers: customerCount || 0
       });
+
+      // 4. Calculate Activity Data (Last 14 Days)
+      const last14Days: { day: string; value: number; dateStr: string }[] = [];
+      const today = new Date();
+      for (let i = 13; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        // Format date string for label e.g., "Aug 21"
+        const dayLabel = d.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
+        // Format ISO string representation for comparison: YYYY-MM-DD
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const dateStr = `${yyyy}-${mm}-${dd}`;
+        last14Days.push({ day: dayLabel, value: 0, dateStr });
+      }
+
+      orders.forEach(o => {
+        if (o.status === 'Cancelled') return;
+        const oDate = new Date(o.created_at);
+        const yyyy = oDate.getFullYear();
+        const mm = String(oDate.getMonth() + 1).padStart(2, '0');
+        const dd = String(oDate.getDate()).padStart(2, '0');
+        const oDateStr = `${yyyy}-${mm}-${dd}`;
+
+        const dayBucket = last14Days.find(d => d.dateStr === oDateStr);
+        if (dayBucket) {
+          dayBucket.value += o.total;
+        }
+      });
+
+      setActivityData(last14Days.map(d => ({ day: d.day, value: d.value })));
+
+      // 5. Fetch all Order Items to calculate Category Sales
+      const { data: allOrderItems, error: allItemsError } = await supabase
+        .from('order_items')
+        .select('order_id, product_id, quantity, price');
+
+      const categorySales: Record<string, number> = {};
+      let totalSalesVal = 0;
+
+      if (!allItemsError && allOrderItems) {
+        allOrderItems.forEach(item => {
+          const associatedOrder = orders.find(o => o.id === item.order_id);
+          if (!associatedOrder || associatedOrder.status === 'Cancelled') return;
+
+          const cat = productCategoryMap[String(item.product_id)] || 'Uncategorized';
+          const itemVal = item.price * item.quantity;
+          categorySales[cat] = (categorySales[cat] || 0) + itemVal;
+          totalSalesVal += itemVal;
+        });
+      }
+
+      const colors = ['#ff5a00', '#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899'];
+      const formattedSalesData = Object.entries(categorySales).map(([category, value], idx) => {
+        const percentage = totalSalesVal > 0 ? Math.round((value / totalSalesVal) * 100) : 0;
+        return {
+          category,
+          percentage,
+          color: colors[idx % colors.length]
+        };
+      }).sort((a, b) => b.percentage - a.percentage);
+
+      // If no sales data, put default categories
+      if (formattedSalesData.length === 0) {
+        setSalesData([
+          { category: 'T-Shirts', percentage: 0, color: '#ff5a00' },
+          { category: 'Uncategorized', percentage: 0, color: '#3b82f6' }
+        ]);
+      } else {
+        setSalesData(formattedSalesData);
+      }
 
       // Format recent orders
       const formattedRecent: RecentOrder[] = orders.slice(0, 5).map(o => ({
@@ -322,7 +403,7 @@ const AdminDashboardContent: React.FC = () => {
           </div>
         </section>
 
-        <SalesAnalytics />
+        <SalesAnalytics salesData={salesData} activityData={activityData} />
       </div>
     </AdminLayout>
   );
