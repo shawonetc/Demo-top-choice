@@ -439,7 +439,7 @@ const SettingsPage: React.FC = () => {
                     <input
                       type="text"
                       className={styles.input}
-                      placeholder="8801887245556"
+                      placeholder="8801301697509"
                       value={settings.storeWhatsapp}
                       onChange={(e) => setSettings({ ...settings, storeWhatsapp: e.target.value })}
                     />

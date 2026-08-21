@@ -39,24 +39,24 @@ export default async function Home() {
           NittoNotun-BD - Best Online Shop for Premium &amp; Stylish T-Shirts in Bangladesh
         </h1>
         <HeroBanner />
-        <ProductGrid 
-          title="নতুন কালেকশন" 
-          products={newCollectionProducts} 
-          showSeeMore={true} 
+        <ProductGrid
+          title="নতুন কালেকশন"
+          products={newCollectionProducts}
+          showSeeMore={true}
           seeMoreUrl="/category/new-collection"
           disablePagination={true}
         />
-        <ProductGrid 
-          title="Waterproof Bedsheet" 
-          products={waterproofProducts} 
-          showSeeMore={true} 
+        <ProductGrid
+          title="Waterproof Bedsheet"
+          products={waterproofProducts}
+          showSeeMore={true}
           seeMoreUrl="/category/waterproof-chador"
           disablePagination={true}
         />
-        <ProductGrid 
-          title="রি-ইউজেবল ডায়াপার" 
-          products={diaperProductsFormatted} 
-          showSeeMore={true} 
+        <ProductGrid
+          title="রি-ইউজেবল ডায়াপার"
+          products={diaperProductsFormatted}
+          showSeeMore={true}
           seeMoreUrl="/category/normal-chador"
           disablePagination={true}
         />

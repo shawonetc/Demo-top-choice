@@ -1,8 +1,9 @@
 import { MetadataRoute } from 'next';
 import { getProducts } from '../data/products';
+import { siteConfig } from '../lib/config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://nittonotonbd.com';
+  const baseUrl = siteConfig.url;
 
   // Fetch all products to generate dynamic sitemap entries
   let products: any[] = [];

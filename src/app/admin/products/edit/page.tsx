@@ -34,7 +34,7 @@ const EditProductForm: React.FC = () => {
     gallery_images: ['', '', '', ''],
     category: '',
     stock_status: 'In Stock',
-    call_to_order: '01887245556',
+    call_to_order: '01301697509',
     product_code: ''
   });
   const [uploadingIndex, setUploadingIndex] = React.useState<number | null>(null);
@@ -47,6 +47,29 @@ const EditProductForm: React.FC = () => {
   const [size7x8Image, setSize7x8Image] = React.useState('');
   const [uploadingSize6x7, setUploadingSize6x7] = React.useState(false);
   const [uploadingSize7x8, setUploadingSize7x8] = React.useState(false);
+
+  // Category states
+  const [categories, setCategories] = React.useState<string[]>(['ওয়াটারপ্রুফ চাদর', 'ডায়াপার', 'মশারী']);
+  const [isCustomCategory, setIsCustomCategory] = React.useState(false);
+  const [customCategoryInput, setCustomCategoryInput] = React.useState('');
+
+  React.useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('category');
+        if (data) {
+          const uniqueCats = Array.from(new Set(data.map(p => p.category).filter(Boolean))) as string[];
+          const merged = Array.from(new Set(['ওয়াটারপ্রুফ চাদর', 'ডায়াপার', 'মশারী', ...uniqueCats]));
+          setCategories(merged);
+        }
+      } catch (e) {
+        console.error('Error fetching categories:', e);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   React.useEffect(() => {
     if (!productId) {
@@ -122,7 +145,7 @@ const EditProductForm: React.FC = () => {
             gallery_images: gallery.slice(0, 4),
             category: data.category || '',
             stock_status: data.stock_status || 'In Stock',
-            call_to_order: data.call_to_order || '01887245556',
+            call_to_order: data.call_to_order || '01301697509',
             product_code: loadedCode
           });
         }
@@ -213,12 +236,17 @@ const EditProductForm: React.FC = () => {
   };
 
   const generateSlug = (text: string) => {
-    return text
+    const baseSlug = text
       .toLowerCase()
       .trim()
       .replace(/[^\w\s-]/g, '')
       .replace(/[\s_-]+/g, '-')
       .replace(/^-+|-+$/g, '');
+      
+    if (!baseSlug) {
+      return `product-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+    }
+    return baseSlug;
   };
 
   const handleSave = async () => {
@@ -326,7 +354,7 @@ const EditProductForm: React.FC = () => {
         console.error('Failed to trigger revalidation:', revalErr);
       }
 
-      alert('Product updated successfully!');
+      alert('প্রোডাক্ট সফলভাবে আপডেট করা হয়েছে!');
       router.push('/admin/products');
     } catch (error) {
       console.error('Error updating product:', error);
@@ -759,20 +787,56 @@ const EditProductForm: React.FC = () => {
           </div>
 
           <div className={styles.formSection}>
-            <h2 className={styles.sectionTitle} style={{ marginBottom: '20px' }}>Category</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h2 className={styles.sectionTitle} style={{ marginBottom: 0 }}>Category</h2>
+              <button 
+                type="button" 
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: 'var(--primary-color)', 
+                  cursor: 'pointer', 
+                  fontSize: '13px', 
+                  fontWeight: '600',
+                  padding: 0
+                }}
+                onClick={() => {
+                  const nextState = !isCustomCategory;
+                  setIsCustomCategory(nextState);
+                  setCustomCategoryInput('');
+                  setFormData({ ...formData, category: '' });
+                }}
+              >
+                {isCustomCategory ? "Select Category" : "+ Add New"}
+              </button>
+            </div>
             <div className={styles.formGroup}>
               <label className={styles.formLabel}>Product Category *</label>
-              <select 
-                className={styles.select} 
-                style={{ width: '100%' }}
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-              >
-                <option value="">Select Category</option>
-                <option value="ওয়াটারপ্রুফ চাদর">ওয়াটারপ্রুফ চাদর</option>
-                <option value="ডায়াপার">ডায়াপার</option>
-                <option value="মশারী">মশারী</option>
-              </select>
+              {!isCustomCategory ? (
+                <select 
+                  className={styles.select} 
+                  style={{ width: '100%' }}
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((cat) => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
+                </select>
+              ) : (
+                <input 
+                  type="text"
+                  className={styles.input}
+                  style={{ width: '100%' }}
+                  placeholder="Enter new category name..."
+                  value={customCategoryInput}
+                  onChange={(e) => {
+                    setCustomCategoryInput(e.target.value);
+                    setFormData({ ...formData, category: e.target.value });
+                  }}
+                />
+              )}
             </div>
           </div>
 
