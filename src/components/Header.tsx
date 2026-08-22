@@ -22,7 +22,8 @@ export default function Header() {
     { name: "নতুন কালেকশন", slug: "new-collection" },
     { name: "ওয়াটারপ্রুফ চাদর", slug: "waterproof-chador" },
     { name: "ডায়াপার", slug: "normal-chador" },
-    { name: "মশারী", slug: "moshari" }
+    { name: "মশারী", slug: "moshari" },
+    { name: "Premium Quality Shirt", slug: "premium-shirt" }
   ];
 
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);

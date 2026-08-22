@@ -21,7 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // Dynamic category list
-  const categories = ['new-collection', 'waterproof-chador', 'normal-chador', 'moshari'];
+  const categories = ['new-collection', 'waterproof-chador', 'normal-chador', 'moshari', 'premium-shirt'];
   const categoryEntries = categories.map((slug) => ({
     url: `${baseUrl}/category/${slug}`,
     lastModified: new Date(),

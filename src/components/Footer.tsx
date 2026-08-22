@@ -138,7 +138,7 @@ export default function Footer() {
       <div className={styles.bottomBar}>
         <div className={styles.bottomBarContent}>
           <p>
-            &copy; 2026 NittoNotun-BDs. All rights reserved. | Developer{' '}
+            &copy; 2026 {settings.name}. All rights reserved. | Developer{' '}
             <a 
               href="http://demo-shawon.vercel.app/" 
               target="_blank" 

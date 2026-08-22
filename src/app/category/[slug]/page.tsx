@@ -15,7 +15,8 @@ const categoryMap: Record<string, string> = {
   "waterproof-chador": "ওয়াটারপ্রুফ চাদর",
   "normal-chador": "ডায়াপার",
   "diaper": "ডায়াপার",
-  "moshari": "মশারী"
+  "moshari": "মশারী",
+  "premium-shirt": "Premium Quality Shirt"
 };
 
 // এই slug গুলোতে extra categories-ও মিলিয়ে দেখাবে
