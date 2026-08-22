@@ -183,7 +183,7 @@ const AdminProductsPage: React.FC = () => {
       </div>
 
       <div className={styles.section}>
-        <div className={styles.tableWrapper}>
+        <div className={styles.productsTableWrapper}>
           <table className={styles.table}>
             <thead>
               <tr>
