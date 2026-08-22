@@ -1187,6 +1187,10 @@
   background-color: var(--bg-light);
 }
 
+.hideOnDesktop {
+  display: none !important;
+}
+
 @media (max-width: 1024px) {
   .formGrid {
     grid-template-columns: 1fr;
@@ -1227,10 +1231,6 @@
   .hideOnDesktop {
     display: flex !important;
   }
-}
-
-.hideOnDesktop {
-  display: none !important;
 }
 
 .modalOverlay {
