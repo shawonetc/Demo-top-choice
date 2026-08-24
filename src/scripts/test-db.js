@@ -10,18 +10,16 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 async function test() {
   try {
-    const { data, error } = await supabase.from('products').select('*').limit(1);
+    const { data, error } = await supabase
+      .from('store_settings')
+      .update({ email: 'topchoicebd@gmail.com' })
+      .eq('id', 1)
+      .select();
+      
     if (error) {
-      console.error('Error fetching products:', error);
+      console.error('Error updating settings:', error);
     } else {
-      console.log('Products sample:', data);
-    }
-
-    const { data: profiles, error: pError } = await supabase.from('profiles').select('*');
-    if (pError) {
-      console.error('Error fetching profiles:', pError);
-    } else {
-      console.log('Profiles:', profiles);
+      console.log('Updated Settings:', JSON.stringify(data, null, 2));
     }
   } catch (err) {
     console.error('Unexpected error:', err);

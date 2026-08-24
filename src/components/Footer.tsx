@@ -1,5 +1,5 @@
 "use client";
- 
+
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -115,19 +115,21 @@ export default function Footer() {
               <div className={styles.iconContainer}>
                 <HugeiconsIcon icon={CallIcon} size={18} color="currentColor" />
               </div>
-              <a href="tel:013016975090" className={styles.contactLink}>013016975090</a>
+              <a href="tel:01301697509" className={styles.contactLink}>01301697509</a>
             </li>
             <li className={styles.contactItem}>
               <div className={styles.iconContainer}>
                 <HugeiconsIcon icon={WhatsappIcon} size={18} color="currentColor" />
               </div>
-              <a href="https://wa.me/88013016975090" target="_blank" rel="noopener noreferrer" className={styles.contactLink}>013016975090</a>
+              <a href="https://wa.me/8801301697509" target="_blank" rel="noopener noreferrer" className={styles.contactLink}>01301697509</a>
             </li>
             <li className={styles.contactItem}>
               <div className={styles.iconContainer}>
                 <HugeiconsIcon icon={Mail01Icon} size={18} color="currentColor" />
               </div>
-              <a href={`mailto:${settings.contact.email}`} className={styles.contactLink}>{settings.contact.email}</a>
+              <a href={`mailto:${settings.contact.email || 'topchoicebd@gmail.com'}`} className={styles.contactLink}>
+                topchoicebd@gmail.com
+              </a>
             </li>
           </ul>
         </div>
@@ -139,10 +141,10 @@ export default function Footer() {
         <div className={styles.bottomBarContent}>
           <p>
             &copy; 2026 {settings.name}. All rights reserved. | Developer{' '}
-            <a 
-              href="http://demo-shawon.vercel.app/" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="http://demo-shawon.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{ color: 'inherit', textDecoration: 'underline' }}
             >
               Shawon
